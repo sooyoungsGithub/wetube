@@ -7,17 +7,21 @@ import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import routes from "./routes"
+import {
+    localsMiddleware
+} from "./middlewares";
 const app = express();
 
+app.use(helmet());
 app.set("view engine", "pug");
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(helmet());
 app.use(morgan("dev"));
 
+app.use(localsMiddleware);
 // get이 아닌 use면 userRouter에 있는 모든 url을 쓰겠다.
 app.use(routes.home, globalRouter)
 app.use(routes.users, userRouter);
