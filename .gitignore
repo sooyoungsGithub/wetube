@@ -85,3 +85,5 @@ typings/
 
 # 패키지에 대한 보안과 관련되어 있으니 igrore 해줘야함
 package-lock.json
+
+uploads/
