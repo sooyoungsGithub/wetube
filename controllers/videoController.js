@@ -41,6 +41,7 @@ export const postUpload = (req, res) => {
             description
         }
     } = req;
+
     // Video Upload && Save
     res.redirect(routes.videoDetail(324393));
 }
