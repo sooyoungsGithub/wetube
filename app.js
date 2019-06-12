@@ -3,13 +3,20 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import passport from "passport";
+import mongoose from "mongoose";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import { localsMiddleware } from "./middlewares";
 import routes from "./routes";
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
+import "./passport";
 
 const app = express();
+
+const CookieStore = MongoStore(session);
 
 app.use(helmet());
 app.set("view engine", "pug");
@@ -23,6 +30,20 @@ app.use(
   })
 );
 app.use(morgan("dev"));
+// session({}) => 쿠키를 해독함
+// 쿠키를 해독해서 id 값이 passport로 넘어가 deserialize 실행되어 식별함
+app.use(
+  session({
+    secret: process.env.COOKIE_SECRET,
+    resave: true,
+    saveUninitialized: false,
+    store: new CookieStore({
+      mongooseConnection: mongoose.connection
+    })
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(localsMiddleware);
 // get이 아닌 use면 userRouter에 있는 모든 url을 쓰겠다.
