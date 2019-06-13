@@ -26,12 +26,19 @@ export const search = async (req, res) => {
   let videos = [];
   try {
     videos = await Video.find({
-      title: { $regex: searchingBy, $options: "i" }
+      title: {
+        $regex: searchingBy,
+        $options: "i"
+      }
     });
   } catch (error) {
     console.log(error);
   }
-  res.render("search", { pageTitle: "Search", searchingBy, videos });
+  res.render("search", {
+    pageTitle: "Search",
+    searchingBy,
+    videos
+  });
 };
 
 export const getUpload = (req, res) =>
@@ -47,8 +54,11 @@ export const postUpload = async (req, res) => {
   const newVideo = await Video.create({
     fileUrl: path,
     title,
-    description
+    description,
+    creator: req.user.id
   });
+  req.user.videos.push(newVideo.id);
+  req.user.save();
   res.redirect(routes.videoDetail(newVideo.id));
 };
 
@@ -57,7 +67,9 @@ export const videoDetail = async (req, res) => {
     params: { id }
   } = req;
   try {
-    const video = await Video.findById(id);
+    // .populate() -> 객체를 데려오는 함수 (Object ID 타입에만 쓸 수 있음)
+    const video = await Video.findById(id).populate("creator");
+    console.log(video);
     res.render("videoDetail", {
       pageTitle: video.title,
       video
