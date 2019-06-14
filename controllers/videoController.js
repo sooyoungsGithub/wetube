@@ -69,7 +69,7 @@ export const videoDetail = async (req, res) => {
   try {
     // .populate() -> 객체를 데려오는 함수 (Object ID 타입에만 쓸 수 있음)
     const video = await Video.findById(id).populate("creator");
-    console.log(video);
+    // console.log(video);
     res.render("videoDetail", {
       pageTitle: video.title,
       video
@@ -85,10 +85,15 @@ export const getEditVideo = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id);
-    res.render("editVideo", {
-      pageTitle: `Edit ${video.title}`,
-      video
-    });
+    if (video.creator !== req.user.id) {
+      // 여기서 에러 발생되면 catch로 가게됨
+      throw Error();
+    } else {
+      res.render("editVideo", {
+        pageTitle: `Edit ${video.title}`,
+        video
+      });
+    }
   } catch (error) {
     res.redirect(routes.home);
   }
@@ -119,9 +124,15 @@ export const deleteVideo = async (req, res) => {
     params: { id }
   } = req;
   try {
-    await Video.findOneAndRemove({
-      _id: id
-    });
+    const video = await Video.findById(id);
+    if (video.creator !== req.user.id) {
+      // 여기서 에러 발생되면 catch로 가게됨
+      throw Error();
+    } else {
+      await Video.findOneAndRemove({
+        _id: id
+      });
+    }
   } catch (error) {
     console.log(error);
   }
