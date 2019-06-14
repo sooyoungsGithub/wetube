@@ -16,4 +16,7 @@ module.exports = {
       "ignoreUrls": true
     }]
   },
+  env: {
+    browser: "true"
+  }
 };
