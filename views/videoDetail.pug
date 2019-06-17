@@ -33,5 +33,9 @@ block content
             ul.video__comments-list#jsCommentList
                 each comment in video.comments.reverse()
                     li
-                        span=comment.text
+                        if loggedUser && (String(comment.creator) === loggedUser.id)
+                            span.jsComment=comment.text
+                                button(id=String(comment._id)) ❌
+                        else 
+                            span=comment.text
             

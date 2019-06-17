@@ -11,13 +11,19 @@ const increaseNumber = () => {
 };
 
 // 댓글이 db에 저장되는데에 시간이 걸릴 뿐더러 한번 새로고침을 해줘야 댓글이 나타나므로 fake로 내가 쓴 댓글이 달자마자 추가된것처럼 보여지게 하는 역할
-const addComment = comment => {
+const addComment = (comment, commentID) => {
   const li = document.createElement("li");
   const span = document.createElement("span");
+  const delBtn = document.createElement("button");
   span.innerHTML = comment;
+  delBtn.id = String(commentID);
+  delBtn.innerText = "❌";
+  //   delBtn.addEventListener("click", handleClick);
+  span.appendChild(delBtn);
   li.appendChild(span);
   commentList.prepend(li);
   increaseNumber();
+  window.location.reload();
 };
 
 const sendComment = async comment => {
