@@ -49,11 +49,11 @@ export const getUpload = (req, res) =>
 export const postUpload = async (req, res) => {
   const {
     body: { title, description },
-    file: { path }
+    file: { location }
   } = req;
-
+  console.log(req.file);
   const newVideo = await Video.create({
-    fileUrl: path,
+    fileUrl: location,
     title,
     description,
     creator: req.user.id
@@ -63,33 +63,34 @@ export const postUpload = async (req, res) => {
   res.redirect(routes.videoDetail(newVideo.id));
 };
 
+// Video Detail
+
 export const videoDetail = async (req, res) => {
   const {
     params: { id }
   } = req;
   try {
-    // .populate() -> 객체를 데려오는 함수 (Object ID 타입에만 쓸 수 있음)
     const video = await Video.findById(id)
       .populate("creator")
       .populate("comments");
-    // console.log(video);
     res.render("videoDetail", {
       pageTitle: video.title,
       video
     });
   } catch (error) {
-    // console.log(error);
     res.redirect(routes.home);
   }
 };
+
+// Edit Video
+
 export const getEditVideo = async (req, res) => {
   const {
     params: { id }
   } = req;
   try {
     const video = await Video.findById(id);
-    if (video.creator !== req.user.id) {
-      // 여기서 에러 발생되면 catch로 가게됨
+    if (String(video.creator) !== req.user.id) {
       throw Error();
     } else {
       res.render("editVideo", {
@@ -101,6 +102,7 @@ export const getEditVideo = async (req, res) => {
     res.redirect(routes.home);
   }
 };
+
 export const postEditVideo = async (req, res) => {
   const {
     params: { id },
@@ -113,7 +115,6 @@ export const postEditVideo = async (req, res) => {
       },
       {
         title,
-        //  = title: title
         description
       }
     );
@@ -122,14 +123,16 @@ export const postEditVideo = async (req, res) => {
     res.redirect(routes.home);
   }
 };
+
+// Delete Video
+
 export const deleteVideo = async (req, res) => {
   const {
     params: { id }
   } = req;
   try {
     const video = await Video.findById(id);
-    if (video.creator !== req.user.id) {
-      // 여기서 에러 발생되면 catch로 가게됨
+    if (String(video.creator) !== req.user.id) {
       throw Error();
     } else {
       await Video.findOneAndRemove({
