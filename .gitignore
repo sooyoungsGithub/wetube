@@ -4,10 +4,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
-
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
 pids
@@ -60,7 +56,6 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -75,19 +70,11 @@ typings/
 .vuepress/dist
 
 # Serverless directories
-.serverless/
+.serverless
 
 # FuseBox cache
 .fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# 패키지에 대한 보안과 관련되어 있으니 igrore 해줘야함
 package-lock.json
-
-uploads/
-
-static/
-
-build/
+uploads
+static
+build
